@@ -1,4 +1,4 @@
-package com.example.textexpanderapp
+package com.dacotech.textexpanderapp
 
 import org.junit.Test
 
