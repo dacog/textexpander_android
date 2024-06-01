@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.textexpanderapp"
+    namespace = "com.dacotech.textexpanderapp"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.textexpanderapp"
+        applicationId = "com.dacotech.textexpanderapp"
         minSdk = 21
         targetSdk = 34
         versionCode = 1
@@ -43,5 +43,5 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     // https://mvnrepository.com/artifact/org.yaml/snakeyaml
-    implementation("org.yaml:snakeyaml:1.8")
+    implementation("org.yaml:snakeyaml:1.29")
 }
