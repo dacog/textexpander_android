@@ -22,3 +22,52 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+# Gradle files
+.gradle/
+**/build/
+**/local.properties
+**/*.iml
+.idea/
+.DS_Store
+
+# Android Studio generated files
+.idea/caches/
+.idea/libraries/
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+.idea/misc.xml
+
+# Keystore files
+*.jks
+*.keystore
+
+# External native build folder generated in Android Studio 2.2 and later
+.cxx/
+.externalNativeBuild/
+
+# Google Services (e.g., google-services.json)
+# These files may contain sensitive information and should not be included in source control
+google-services.json
+
+# Firebase Crashlytics
+crashlytics.properties
+
+# Other files and directories
+*.log
+local.properties
+*.orig
+*.bak
+*.swp
+*~
+
+# Android specific
+**/gradle-app/
+captures/
+
+# OS specific
+Thumbs.db
+.DS_Store
+*.class
