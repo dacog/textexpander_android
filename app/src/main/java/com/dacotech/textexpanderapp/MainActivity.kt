@@ -31,18 +31,18 @@ class MainActivity : AppCompatActivity() {
 
     private val openDocumentTree = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri: Uri? ->
         if (uri != null) {
-            contentResolver.takePersistableUriPermission(
-                uri,
-                Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-            )
-            directoryUri = uri
             try {
+                contentResolver.takePersistableUriPermission(
+                    uri,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                )
+                directoryUri = uri
                 CoroutineScope(Dispatchers.Main).launch {
                     readFilesFromDirectory(uri)
                 }
             } catch (e: Exception) {
-                Log.e("MainActivity", "Error reading files from directory", e)
-                Toast.makeText(this, "Error reading files from directory", Toast.LENGTH_SHORT).show()
+                Log.e("MainActivity", "Error accessing directory: ${e.message}", e)
+                Toast.makeText(this, "Error accessing directory: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         } else {
             Toast.makeText(this, "Directory selection cancelled", Toast.LENGTH_SHORT).show()
@@ -70,33 +70,45 @@ class MainActivity : AppCompatActivity() {
     }
 
     private suspend fun readFilesFromDirectory(uri: Uri) = withContext(Dispatchers.IO) {
-        val documentTree = DocumentFile.fromTreeUri(this@MainActivity, uri) ?: return@withContext
-        val matchDir = documentTree.findFile("match")
-        if (matchDir != null && matchDir.isDirectory) {
-            val files = matchDir.listFiles().filter { it.name?.endsWith(".yml") == true }
-            fileList.clear()
-            TriggerRepository.triggers.clear()
-            for (file in files) {
-                fileList.add(file.name ?: "Unknown")
-                Log.d("File Access", "Found file: ${file.name}")
-                readFileContent(file.uri)
+        try {
+            val documentTree = DocumentFile.fromTreeUri(this@MainActivity, uri) ?: throw Exception("Failed to get DocumentFile from URI")
+            val matchDir = documentTree.findFile("match") ?: throw Exception("Match directory not found")
+            if (matchDir.isDirectory) {
+                val files = matchDir.listFiles().filter { it.name?.endsWith(".yml") == true }
+                fileList.clear()
+                TriggerRepository.triggers.clear()
+                for (file in files) {
+                    fileList.add(file.name ?: "Unknown")
+                    Log.d("File Access", "Found file: ${file.name}")
+                    readFileContent(file.uri)
+                }
+                withContext(Dispatchers.Main) {
+                    updateFileListView()
+                    updateTriggerListView()
+                }
+            } else {
+                throw Exception("Match directory is not a directory")
             }
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error reading files from directory: ${e.message}", e)
             withContext(Dispatchers.Main) {
-                updateFileListView()
-                updateTriggerListView()
-            }
-        } else {
-            withContext(Dispatchers.Main) {
-                Toast.makeText(this@MainActivity, "Match directory not found", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MainActivity, "Error reading files from directory: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private suspend fun readFileContent(uri: Uri) = withContext(Dispatchers.IO) {
-        contentResolver.openInputStream(uri)?.use { inputStream ->
-            val text = inputStream.bufferedReader().use { it.readText() }
-            TriggerRepository.loadTriggersFromYAML(text)
-            Log.d("File Content", "Content of ${uri.lastPathSegment}: $text")
+        try {
+            contentResolver.openInputStream(uri)?.use { inputStream ->
+                val text = inputStream.bufferedReader().use { it.readText() }
+                TriggerRepository.loadTriggersFromYAML(text)
+                Log.d("File Content", "Content of ${uri.lastPathSegment}: $text")
+            } ?: throw Exception("Failed to open input stream for URI")
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error reading file content: ${e.message}", e)
+            withContext(Dispatchers.Main) {
+                Toast.makeText(this@MainActivity, "Error parsing file: ${uri.lastPathSegment}", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
