@@ -45,6 +45,17 @@ I expect there to be errors and you are welcome to create an Issue and fix it ðŸ
 2. Open the project in Android Studio.
 3. Build and run the project on your device or emulator.
 
+**Note:**
+
+**Direct APK Installation**:
+   - **Recommended Method**: Use ADB or Android Studio's Device Manager to avoid security restrictions.
+   - **Alternative Method**: If you need to install the APK directly, such as through a file transfer:
+      - Transfer the APK file to your device.
+      - Ensure you have enabled **Install from Unknown Sources** in your device settings.
+      - Use a file manager to locate and install the APK.
+      - Note: Direct installation methods may encounter additional security prompts or restrictions. In my case, I could not activate the accessibility service, but the app itself worked (but without text expansion, just the copy to clipboard functionality)
+
+
 ### Configuration
 
 1. Place your YAML files in the `Documents/espanso/match` directory on your device. The YAML files should contain triggers and replacement values in the following format:
@@ -59,7 +70,7 @@ You can use an app such as [FolderSync](https://foldersync.io/) to sync your `es
 
 You may also use git or just copy the `espanso` folder you have in your computer to your Documents folder on your phone.
 
-2. Open the Text Expander app and select the `Documents/espanso/match` directory. The app will parse the YAML files and display the triggers and values.
+2. Open the Text Expander app and select the `Documents/espanso` folder where the `match` directory is in. The app will parse the YAML files and display the triggers and values.
 
 ### Enabling the Accessibility Service
 
