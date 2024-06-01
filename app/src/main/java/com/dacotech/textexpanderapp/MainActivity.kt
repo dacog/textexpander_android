@@ -1,5 +1,8 @@
 package com.dacotech.textexpanderapp
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -7,6 +10,7 @@ import android.provider.DocumentsContract
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -16,8 +20,10 @@ class MainActivity : AppCompatActivity() {
     private var directoryUri: Uri? = null
     private lateinit var fileListView: ListView
     private lateinit var triggerListView: ListView
+    private lateinit var searchView: SearchView
     private val fileList = mutableListOf<String>()
     private val triggerList = mutableListOf<String>()
+    private lateinit var triggerAdapter: CustomTriggerAdapter
 
     private val openDocumentTree = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri: Uri? ->
         if (uri != null) {
@@ -38,7 +44,14 @@ class MainActivity : AppCompatActivity() {
 
         fileListView = findViewById(R.id.fileListView)
         triggerListView = findViewById(R.id.triggerListView)
+        searchView = findViewById(R.id.searchView)
+
+        triggerAdapter = CustomTriggerAdapter(this, android.R.layout.simple_list_item_1, triggerList)
+        triggerListView.adapter = triggerAdapter
+
         selectDirectory()
+        setupSearchView()
+        setupTriggerListView()
     }
 
     private fun selectDirectory() {
@@ -57,7 +70,7 @@ class MainActivity : AppCompatActivity() {
                 Log.d("File Access", "Found file: ${file.name}")
                 readFileContent(file.uri)
             }
-            updateListView()
+            updateFileListView()
         } else {
             Toast.makeText(this, "Match directory not found", Toast.LENGTH_SHORT).show()
         }
@@ -72,7 +85,7 @@ class MainActivity : AppCompatActivity() {
         updateTriggerListView()
     }
 
-    private fun updateListView() {
+    private fun updateFileListView() {
         val fileAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, fileList)
         fileListView.adapter = fileAdapter
     }
@@ -80,7 +93,31 @@ class MainActivity : AppCompatActivity() {
     private fun updateTriggerListView() {
         triggerList.clear()
         TriggerRepository.triggers.forEach { triggerList.add("${it.trigger} -> ${it.replace}") }
-        val triggerAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, triggerList)
-        triggerListView.adapter = triggerAdapter
+        triggerAdapter.notifyDataSetChanged()
+    }
+
+    private fun setupSearchView() {
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                triggerAdapter.filter.filter(newText)
+                return false
+            }
+        })
+    }
+
+    private fun setupTriggerListView() {
+        triggerListView.setOnItemClickListener { _, _, position, _ ->
+            val item = triggerAdapter.getItem(position)
+            item?.let {
+                val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText("trigger", it.split(" -> ")[1])
+                clipboard.setPrimaryClip(clip)
+                Toast.makeText(this, "Copied to clipboard: ${it.split(" -> ")[1]}", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
