@@ -15,6 +15,10 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.documentfile.provider.DocumentFile
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
     private var directoryUri: Uri? = null
@@ -32,7 +36,14 @@ class MainActivity : AppCompatActivity() {
                 Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
             )
             directoryUri = uri
-            readFilesFromDirectory(uri)
+            try {
+                CoroutineScope(Dispatchers.Main).launch {
+                    readFilesFromDirectory(uri)
+                }
+            } catch (e: Exception) {
+                Log.e("MainActivity", "Error reading files from directory", e)
+                Toast.makeText(this, "Error reading files from directory", Toast.LENGTH_SHORT).show()
+            }
         } else {
             Toast.makeText(this, "Directory selection cancelled", Toast.LENGTH_SHORT).show()
         }
@@ -58,8 +69,8 @@ class MainActivity : AppCompatActivity() {
         openDocumentTree.launch(null)
     }
 
-    private fun readFilesFromDirectory(uri: Uri) {
-        val documentTree = DocumentFile.fromTreeUri(this, uri) ?: return
+    private suspend fun readFilesFromDirectory(uri: Uri) = withContext(Dispatchers.IO) {
+        val documentTree = DocumentFile.fromTreeUri(this@MainActivity, uri) ?: return@withContext
         val matchDir = documentTree.findFile("match")
         if (matchDir != null && matchDir.isDirectory) {
             val files = matchDir.listFiles().filter { it.name?.endsWith(".yml") == true }
@@ -70,19 +81,23 @@ class MainActivity : AppCompatActivity() {
                 Log.d("File Access", "Found file: ${file.name}")
                 readFileContent(file.uri)
             }
-            updateFileListView()
+            withContext(Dispatchers.Main) {
+                updateFileListView()
+                updateTriggerListView()
+            }
         } else {
-            Toast.makeText(this, "Match directory not found", Toast.LENGTH_SHORT).show()
+            withContext(Dispatchers.Main) {
+                Toast.makeText(this@MainActivity, "Match directory not found", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
-    private fun readFileContent(uri: Uri) {
+    private suspend fun readFileContent(uri: Uri) = withContext(Dispatchers.IO) {
         contentResolver.openInputStream(uri)?.use { inputStream ->
             val text = inputStream.bufferedReader().use { it.readText() }
             TriggerRepository.loadTriggersFromYAML(text)
             Log.d("File Content", "Content of ${uri.lastPathSegment}: $text")
         }
-        updateTriggerListView()
     }
 
     private fun updateFileListView() {
