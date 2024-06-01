@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">TextExpanderApp</string>
+    <string name="app_name">Text Expander</string>
+    <string name="accessibility_service_description">Text Expander Accessibility Service</string>
 </resources>
