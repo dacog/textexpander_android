@@ -14,10 +14,11 @@ import androidx.documentfile.provider.DocumentFile
 
 class MainActivity : AppCompatActivity() {
     private var directoryUri: Uri? = null
-    private lateinit var listView: ListView
+    private lateinit var fileListView: ListView
+    private lateinit var triggerListView: ListView
     private val fileList = mutableListOf<String>()
+    private val triggerList = mutableListOf<String>()
 
-    // Register a contract to open a document tree, used for selecting the directory
     private val openDocumentTree = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri: Uri? ->
         if (uri != null) {
             contentResolver.takePersistableUriPermission(
@@ -35,7 +36,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        listView = findViewById(R.id.listView)
+        fileListView = findViewById(R.id.fileListView)
+        triggerListView = findViewById(R.id.triggerListView)
         selectDirectory()
     }
 
@@ -49,9 +51,11 @@ class MainActivity : AppCompatActivity() {
         if (matchDir != null && matchDir.isDirectory) {
             val files = matchDir.listFiles().filter { it.name?.endsWith(".yml") == true }
             fileList.clear()
+            TriggerRepository.triggers.clear()
             for (file in files) {
                 fileList.add(file.name ?: "Unknown")
                 Log.d("File Access", "Found file: ${file.name}")
+                readFileContent(file.uri)
             }
             updateListView()
         } else {
@@ -59,16 +63,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateListView() {
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, fileList)
-        listView.adapter = adapter
-    }
-
     private fun readFileContent(uri: Uri) {
         contentResolver.openInputStream(uri)?.use { inputStream ->
             val text = inputStream.bufferedReader().use { it.readText() }
+            TriggerRepository.loadTriggersFromYAML(text)
             Log.d("File Content", "Content of ${uri.lastPathSegment}: $text")
-            // Parse the YAML content to extract triggers and values
         }
+        updateTriggerListView()
+    }
+
+    private fun updateListView() {
+        val fileAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, fileList)
+        fileListView.adapter = fileAdapter
+    }
+
+    private fun updateTriggerListView() {
+        triggerList.clear()
+        TriggerRepository.triggers.forEach { triggerList.add("${it.trigger} -> ${it.replace}") }
+        val triggerAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, triggerList)
+        triggerListView.adapter = triggerAdapter
     }
 }
