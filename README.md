@@ -18,8 +18,9 @@ I am now using Linux and Windows at work, and just got an Android Phone and I th
 
 # Disclaimer
 
-This is my very first Android App. I made heavy use fo ChatGpt 4. 4o, Perplexity, Google and Coffee ☕.
-I expect there to be errors and you are welcome to create an Issue and fix it 😁
+- This is my very first Android App. I made heavy use fo ChatGpt 4. 4o, Perplexity, Google and Coffee ☕.
+- I expect there to be errors and, should you find any, you are welcome to create an Issue and fix it. 😁
+- The app is usable as it is now, with an ugly logo and user interface, on at least Android 13 and Android 14.
 
 ## Features
 
