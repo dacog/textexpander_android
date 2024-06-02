@@ -53,7 +53,13 @@ I expect there to be errors and you are welcome to create an Issue and fix it ðŸ
       - Transfer the APK file to your device.
       - Ensure you have enabled **Install from Unknown Sources** in your device settings.
       - Use a file manager to locate and install the APK.
-      - Note: Direct installation methods may encounter additional security prompts or restrictions. In my case, I could not activate the accessibility service, but the app itself worked (but without text expansion, just the copy to clipboard functionality)
+      - Note: Direct installation methods may encounter additional security prompts or restrictions.
+     - To enable the accessibility service for an app installed from the file system, you typically need to follow these steps:
+       - Go to Settings > Accessibility > Installed Apps. 
+       - Select the app you want to grant accessibility services to (it will be grayed out initially). 
+       - Go back to the main Settings menu, then navigate to Apps > TextExpander. 
+       - Tap the three-dot menu in the top-right corner and select "Allow restricted settings."
+       - After granting the necessary permission, go back to the Accessibility menu and enable the accessibility service for your app.
 
 
 ### Configuration
