@@ -1,4 +1,4 @@
-# Text Expander App - `espanso` app companion (not official)
+# Text Expander App - `espanso` app companion (unofficial)
 
 Text Expander is an Android application that allows users to expand text shortcuts into longer predefined phrases. It uses an Accessibility Service to monitor text input and replace triggers with corresponding values in any application.
 The app allows you to select a folder in your Documents folder, and load all the yaml files in the match folder insider the selected folder.
