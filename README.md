@@ -110,6 +110,13 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 
 As I wrote in the Disclaimer above, I expect there to be errors and you are welcome to create an Issue and fix any error you may find 😁
 
+# TODO
+
+- [ ] Testing in other devices. I tested on emulators with android 13 and 14 and on my Moto Edge 20 running Android 14.
+- [ ] A better logo.
+- [ ] add tests
+- [ ] add workflow to build the app
+- [ ] add the app to playstore and fdroid
 
 ## License
 
