@@ -20,7 +20,7 @@ I am now using Linux and Windows at work, and just got an Android Phone and I th
 
 - This is my very first Android App. I made heavy use fo ChatGpt 4. 4o, Perplexity, Google and Coffee ☕.
 - I expect there to be errors and, should you find any, you are welcome to create an Issue and fix it. 😁
-- The app is usable as it is now, with an ugly logo and user interface, on at least Android 13 and Android 14.
+- The app is usable as it is now, with an ugly logo and user interface, on at least Android 7, 13 and 14.
 
 ## Features
 
@@ -35,7 +35,7 @@ I am now using Linux and Windows at work, and just got an Android Phone and I th
 ### Prerequisites
 
 - Android Studio installed on your computer.
-- A device or emulator running Android 13 or higher.
+- A device or emulator running Android 7 (api 25) or higher.
 
 ### Installation
 
@@ -113,7 +113,7 @@ As I wrote in the Disclaimer above, I expect there to be errors and you are welc
 
 # TODO
 
-- [ ] Testing in other devices. I tested on emulators with android 13 and 14 and on my Moto Edge 20 running Android 14.
+- [ ] Testing in other devices. I tested on emulators with android 7 (api 25), android 13 (api 33) and android 14 (api 34) and on my Moto Edge 20 running Android 14.
 - [ ] A better logo.
 - [ ] add tests
 - [ ] add workflow to build the app
