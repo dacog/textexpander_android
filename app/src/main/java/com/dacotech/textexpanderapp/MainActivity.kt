@@ -71,23 +71,14 @@ class MainActivity : AppCompatActivity() {
 
     private suspend fun readFilesFromDirectory(uri: Uri) = withContext(Dispatchers.IO) {
         try {
-            val documentTree = DocumentFile.fromTreeUri(this@MainActivity, uri) ?: throw Exception("Failed to get DocumentFile from URI")
-            val matchDir = documentTree.findFile("match") ?: throw Exception("Match directory not found")
-            if (matchDir.isDirectory) {
-                val files = matchDir.listFiles().filter { it.name?.endsWith(".yml") == true }
-                fileList.clear()
-                TriggerRepository.triggers.clear()
-                for (file in files) {
-                    fileList.add(file.name ?: "Unknown")
-                    Log.d("File Access", "Found file: ${file.name}")
-                    readFileContent(file.uri)
-                }
-                withContext(Dispatchers.Main) {
-                    updateFileListView()
-                    updateTriggerListView()
-                }
-            } else {
-                throw Exception("Match directory is not a directory")
+            val documentTree = DocumentFile.fromTreeUri(this@MainActivity, uri)
+                ?: throw Exception("Failed to get DocumentFile from URI")
+            fileList.clear()
+            TriggerRepository.triggers.clear()
+            readFilesRecursive(documentTree)
+            withContext(Dispatchers.Main) {
+                updateFileListView()
+                updateTriggerListView()
             }
         } catch (e: Exception) {
             Log.e("MainActivity", "Error reading files from directory: ${e.message}", e)
@@ -96,6 +87,22 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    private suspend fun readFilesRecursive(folder: DocumentFile) {
+        if (folder.isDirectory) {
+            val files = folder.listFiles()
+            for (file in files) {
+                if (file.isDirectory) {
+                    readFilesRecursive(file)  // Recursive call for subdirectories
+                } else if (file.isFile && file.name?.endsWith(".yml") == true) {
+                    fileList.add(file.name ?: "Unknown")
+                    Log.d("File Access", "Found file: ${file.name}")
+                    readFileContent(file.uri)
+                }
+            }
+        }
+    }
+
 
     private suspend fun readFileContent(uri: Uri) = withContext(Dispatchers.IO) {
         try {
