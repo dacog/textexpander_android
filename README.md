@@ -111,6 +111,33 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 
 As I wrote in the Disclaimer above, I expect there to be errors and you are welcome to create an Issue and fix any error you may find 😁
 
+
+## Known Alternatives
+
+### TextToolsPro (TTpro)
+
+[TextToolsPro (TTpro)](https://github.com/lochidev/TextToolsPro) is a text expander application for Android that allows importing specific Espanso YAML files. TTpro is built using .NET and functions as a standalone app, enabling users to add triggers and variables directly within the app. It supports features such as date, clipboard, random, and echo extensions. 
+
+#### Differences from This App
+
+- **Platform and Technology**:
+  - **TTpro**: Built as a Maui App using .NET technologies.
+  - **This App**: Developed entirely in Kotlin for native Android development.
+
+- **Functionality and Usage**:
+  - **TTpro**: Standalone text expander with in-app management of triggers and variables.
+  - **This App**: Works with Espanso formatted YAML files, using the same directory structure as on your computer. Supports multiple packages and YAML files in different sub-folders. Allows searching and copying trigger-replace values to the clipboard.
+
+- **Support for Android Versions**:
+ 
+As far as I can tell, both apps support Android 7+.
+
+#### Use Cases (in my opinion)
+
+- **TTpro**: Ideal for users wanting a standalone app with in-app trigger and variable management.
+- **This App**: Perfect for users who use Espanso on Linux, Windows and or Mac and want to sync their setup with their Android phone, maintaining the same directory structure and YAML configuration files.
+
+
 # TODO
 
 - [ ] Testing in other devices. I tested on emulators with android 7 (api 25), android 13 (api 33) and android 14 (api 34) and on my Moto Edge 20 running Android 14.
@@ -118,6 +145,8 @@ As I wrote in the Disclaimer above, I expect there to be errors and you are welc
 - [ ] add tests
 - [ ] add workflow to build the app
 - [ ] add the app to playstore and fdroid
+- [ ] support for multiple triggers 
+- [ ] support for cars (maybe date)
 
 ## License
 
