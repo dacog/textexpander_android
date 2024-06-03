@@ -159,4 +159,4 @@ This project is licensed under the GPL v3 License - see the [LICENSE](LICENSE) f
 
 ## Contact
 
-You can ifnd me in [LinkedIn](https://www.linkedin.com/in/diegocarrasco/), in [GitHub](https://github.com/dacog/) and on [my page](https://diegocarrasco.com/)
+You can find me in [LinkedIn](https://www.linkedin.com/in/diegocarrasco/), in [GitHub](https://github.com/dacog/) and on [my page](https://diegocarrasco.com/)
