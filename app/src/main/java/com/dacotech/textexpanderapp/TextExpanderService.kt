@@ -5,6 +5,10 @@ import android.os.Bundle
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.util.Log
+import java.util.Locale
+import java.util.Date
+import java.text.SimpleDateFormat
+import java.util.*
 
 class TextExpanderService : AccessibilityService() {
 
@@ -18,19 +22,32 @@ class TextExpanderService : AccessibilityService() {
     private fun handleTextChanged(node: AccessibilityNodeInfo) {
         val text = node.text?.toString() ?: return
 
-        // Iterate through triggers and check for matches
         TriggerRepository.triggers.forEach { match ->
             if (text.endsWith(match.trigger)) {
-                val newText = text.replace(match.trigger, match.replace)
-                Log.d("TextExpander", "Expanding trigger: ${match.trigger} to ${match.replace}")
+                var newText = match.replace
+                match.vars.forEach { variable ->
+                    newText = replaceVariable(newText, variable)
+                }
                 node.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, Bundle().apply {
-                    putCharSequence(
-                        AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE,
-                        newText
-                    )
+                    putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, newText)
                 })
             }
         }
+    }
+
+    private fun replaceVariable(text: String, variable: TriggerRepository.Variable): String {
+        return when (variable.type) {
+            "date" -> {
+                val dateFormat = SimpleDateFormat(variable.params["format"], Locale.getDefault())
+                text.replace("{{${variable.name}}}", dateFormat.format(Date()))
+            }
+            else -> text
+        }
+    }
+
+    private fun formatDate(format: String): String {
+        val sdf = SimpleDateFormat(format, Locale.getDefault())
+        return sdf.format(Date())
     }
 
     override fun onInterrupt() {
