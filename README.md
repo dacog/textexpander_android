@@ -24,9 +24,14 @@ I am now using Linux and Windows at work, and just got an Android Phone and I th
 
 ## Features
 
-- **Parse YAML Files:** Reads `.yml` files from the `Documents/espanso/match` directory to load text expansion triggers and values.
+(1.1.0 - 2024-06-04)
+- **Supports multiple triggers** as documented in https://espanso.org/docs/matches/basics/#multiple-triggers
+- Traverses `match` folder and all its **subdirectories**, including package, in search of YAML files.
+
+(1.0 - 2024-06-02)
+- **Parse YAML Files:** Reads `.yml` files from the `espanso/match` directory (when `espanso` is selected as folder) to load text expansion triggers and values.
 - **List Files and Triggers:** Displays the list of YAML files and their triggers and values.
-- **Search Functionality:** Provides a search bar to filter triggers and values.
+- **Search Functionality:** Provides a (fuzzy) search bar to filter triggers and values.
 - **Clipboard Copy:** Copies the value of a trigger to the clipboard when a trigger-value pair is clicked.
 - **Text Expansion:** Expands text shortcuts into longer predefined phrases in any app using an Accessibility Service.
 

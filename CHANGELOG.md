@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.0] - 2024-06-04
 
 ### Added
-- Support for traversing directories within the `match` folder to search for YAML files. This allows the app to handle configurations organized in subdirectories, improving the manageability of larger sets of expansion rules. This is at the same time a Fix because I though I had implemented already.
+- Support for traversing directories within the `match` folder to search for YAML files. This allows the app to handle configurations organized in subdirectories, improving the manageability of larger sets of expansion rules.
 - Support for multiple triggers per single replacement as documented in https://espanso.org/docs/matches/basics/#multiple-triggers. Users can now specify multiple trigger phrases that result in the same output, enhancing flexibility in text expansions in the same way is in the desktop app.
 
 ### Changed
