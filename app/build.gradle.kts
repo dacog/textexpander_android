@@ -48,6 +48,8 @@ dependencies {
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.jetbrains.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
-
+    // JUnit Jupiter API and Engine for JUnit 5
+    testImplementation(libs.jupiter.junit.jupiter.api)
+    testRuntimeOnly(libs.jupiter.junit.jupiter.engine)
 
 }

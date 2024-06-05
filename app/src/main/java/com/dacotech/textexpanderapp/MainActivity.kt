@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var triggerListView: ListView
     private lateinit var searchView: SearchView
     private val fileList = mutableListOf<String>()
-    private val triggerList = mutableListOf<String>()
+    private val triggerList = mutableListOf<Match>()
     private lateinit var triggerAdapter: CustomTriggerAdapter
 
     private val openDocumentTree = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri: Uri? ->
@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         triggerListView = findViewById(R.id.triggerListView)
         searchView = findViewById(R.id.searchView)
 
-        triggerAdapter = CustomTriggerAdapter(this, android.R.layout.simple_list_item_1, triggerList)
+        triggerAdapter = CustomTriggerAdapter(this, android.R.layout.simple_list_item_1, mutableListOf())
         triggerListView.adapter = triggerAdapter
 
         selectDirectory()
@@ -103,7 +103,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     private suspend fun readFileContent(uri: Uri) = withContext(Dispatchers.IO) {
         try {
             contentResolver.openInputStream(uri)?.use { inputStream ->
@@ -126,8 +125,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateTriggerListView() {
         triggerList.clear()
-        TriggerRepository.triggers.forEach { triggerList.add("${it.trigger} -> ${it.replace}") }
-        triggerAdapter.notifyDataSetChanged()
+        Log.i("MainActivity", "Trying to update TriggerListView")
+        TriggerRepository.triggers.forEach { trigger ->
+            triggerList.add(Match(trigger.trigger, trigger.replaceText, trigger.variables?.takeIf { it.isNotEmpty() }))
+            triggerAdapter.notifyDataSetChanged()
+            Log.i("MainActivity", "Found this trigger: ${trigger.trigger}")
+        }
+        triggerAdapter = CustomTriggerAdapter(this, android.R.layout.simple_list_item_1, triggerList)
+        triggerListView.adapter = triggerAdapter
     }
 
     private fun setupSearchView() {
@@ -148,9 +153,14 @@ class MainActivity : AppCompatActivity() {
             val item = triggerAdapter.getItem(position)
             item?.let {
                 val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("trigger", it.split(" -> ")[1])
+                var newText = item.replaceText
+                item.variables?.forEach { variable ->
+                    newText = TextProcessingUtils.replaceVariable(newText, variable)
+                }
+
+                val clip = ClipData.newPlainText("trigger", newText)
                 clipboard.setPrimaryClip(clip)
-                Toast.makeText(this, "Copied to clipboard: ${it.split(" -> ")[1]}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Copied to clipboard: ${newText}", Toast.LENGTH_SHORT).show()
             }
         }
     }
