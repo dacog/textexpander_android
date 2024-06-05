@@ -105,6 +105,35 @@ You may also use git or just copy the `espanso` folder you have in your computer
 - `TextExpanderService.kt`: Monitors text input and performs text expansion using the triggers loaded from YAML files.
 - `CustomTriggerAdapter.kt`: A custom adapter for the `ListView` to implement fuzzy search functionality.
 
+## `espanso` Variables Support
+
+This app has support for variables.
+
+As of now only date is implemented. It uses the same chrono format for dates as `espanso`
+
+The following is supported:
+
+```kotlin
+val tokenMapping = mapOf(
+            "%Y" to "yyyy", // Year with century
+            "%C" to "yy",   // Year divided by 100 and truncated to integer (00-99)
+            "%y" to "yy",   // Year without century (00-99)
+            "%m" to "MM",   // Month as a decimal number (01-12)
+            "%B" to "MMMM", // Full month name
+            "%b" to "MMM",  // Abbreviated month name
+            "%d" to "dd",   // Day of the month as a decimal number (01-31)
+            "%e" to "d",    // Day of the month as a decimal number (1-31); single digit might be preceded by a space
+            "%A" to "EEEE", // Full weekday name
+            "%a" to "EEE",  // Abbreviated weekday name
+            "%H" to "HH",   // Hour (00-23)
+            "%I" to "hh",   // Hour (01-12)
+            "%p" to "a",    // AM/PM designation
+            "%M" to "mm",   // Minute (00-59)
+            "%S" to "ss"    // Second (00-59)
+            // Add more mappings as needed
+        )
+```
+
 ## Dependencies
 
 - [SnakeYAML](https://bitbucket.org/asomov/snakeyaml): A YAML parser for Java.
